@@ -3,6 +3,11 @@ import midi.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * 
+ * @author marti
+ *
+ */
 public class MidiPlayer {
 
 	public static void main(String[] args) {
