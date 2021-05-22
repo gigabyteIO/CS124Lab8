@@ -24,12 +24,15 @@ public class TestMidi {
 
 		for (int i = 0; i < notes.length; i++) {
 			synth.noteOn( notes[i] );  // Turn on the i-th note in the tune.
+			
 			try {
-				Thread.sleep( beat*times[i] ); // Delay to give the note a chance to play.
+			Thread.sleep( beat*times[i] ); // Delay to give the note a chance to play.
 			}
 			catch (InterruptedException e) {
 			}
+			
 			synth.noteOff( notes[i] ); // Turn off the same note.
+			
 		}
 
 	}
