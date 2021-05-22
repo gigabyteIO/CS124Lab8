@@ -23,18 +23,26 @@ public class Tune {
 	 * 
 	 * @param note
 	 */
-	private void add(Note note) {
+	public void add(Note note) {
 		noteList.add(note);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getSize() {
+		return noteList.size();
 	}
 	
 	/**
 	 * 
 	 * @param synth
 	 */
-	private void play(SimpleSynth synth) {
+	public void play(SimpleSynth synth) {
 		
-		for(int i = 0; i < noteList.size() - 1; i++) {
-			synth.noteOn(noteList.get(i).getNoteNumber());
+		for(int i = 0; i < noteList.size(); i++) {
+			noteList.get(i).play(synth);
 		}
 	}
 

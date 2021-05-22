@@ -1,6 +1,7 @@
 import midi.*;
 
 import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -12,6 +13,7 @@ public class MidiPlayer {
 
 	private static Scanner in = new Scanner(System.in);
 	private static SimpleSynth synth = new SimpleSynth();
+	private static Tune tune;
 
 	public static void main(String[] args) {
 	
@@ -90,7 +92,7 @@ public class MidiPlayer {
 	 * 
 	 */
 	public static void exit() {
-		System.out.println("Exiting... Have a nice day!");
+		System.out.println("-> Exiting... Have a nice day!");
 		System.exit(0);
 	} // end exit()
 
@@ -255,6 +257,19 @@ public class MidiPlayer {
 	 * 
 	 */
 	public static void notesForTune() {
+		tune = new Tune();
+		System.out.println("Enter one or more notes for a tune between 0 and 127 with a blank space between them:");
+		String lineOfNotes = in.nextLine();
+		String[] notesString = lineOfNotes.trim().split(" ");
+
+		//int[] notes = new int[notesString.length];
+		for (int i = 0; i < notesString.length; i++) {
+			int noteNumber = Integer.parseInt(notesString[i]);	
+			tune.add(new Note(noteNumber, 1000));		
+			//notes[i] = Integer.parseInt(notesString[i]);
+		}
+		
+		System.out.println("-> Tune created.");
 
 	} // end notesForTune()
 
@@ -262,13 +277,60 @@ public class MidiPlayer {
 	 * 
 	 */
 	public static void randomTune() {
-
+		tune = new Tune();
+		
+		for(int i = 0; i < 20; i++) {
+			
+			Random ran = new Random();
+			int x = ran.nextInt(36) + 48;
+			tune.add(new Note(x, 1000));
+			
+			/*
+			double randBlock = Math.random();
+			
+			// Notes will range from 36 to 84
+			
+			// Most common, make small changes to note
+			if(randBlock >= 0 && randBlock <= .5) {
+				Random ran = new Random();
+				int x = ran.nextInt(6) + 5;
+				
+			}
+			
+			// Second most common, slightly larger changes to note
+			else if(randBlock > .5 && randBlock <= .75) {
+				
+			}
+			
+			// Third most common, slightly larger changes to note
+			else if(randBlock > .75 && randBlock <= .90) {
+				
+			}
+			
+			// Least common, this is between .91 - .99, this is for large changes to the note
+			// whole range(36 - 84)
+			else {
+				
+			}
+			*/
+			
+			
+			
+			
+		}
+		
+		System.out.println("-> Random tune created.");
+		
+		
 	} // end randomTune()
 
 	/**
 	 * 
 	 */
 	public static void playTune() {
-
+		if(tune == null) 
+			System.out.println("-> A tune does not exist yet. Either create one or select option 5 to have the computer create one.");
+		else
+			tune.play(synth);
 	} // end playTune()
 }
