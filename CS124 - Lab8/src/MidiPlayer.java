@@ -14,23 +14,20 @@ public class MidiPlayer {
 	private static Scanner in = new Scanner(System.in);
 	private static SimpleSynth synth = new SimpleSynth();
 	private static Tune tune;
+	private static int userChoice;
+	private static boolean isInt;
 
 	public static void main(String[] args) {
 	
-		displayMenuAndHandleInput();
+		midiMenu();
 		
 	}
 
 	/**
-	 * Displays the interface options and handles the user's input.
+	 * Displays the interface options to interact with the Midi player.
 	 * 
-	 * @return userChoice the option the user has chosen.
 	 */
-	public static void displayMenuAndHandleInput() {
-
-		// in = new Scanner(System.in);
-		int userChoice = 0;
-		boolean isInt = false;
+	public static void midiMenu() {
 
 		while (true) {
 			System.out.println("");
@@ -43,21 +40,7 @@ public class MidiPlayer {
 			System.out.println(" 5.  Make up a randome tune.");
 			System.out.println(" 6.  Play the tune.\n");
 
-			do {
-
-				System.out.print("Enter the number of your choice: ");
-				isInt = in.hasNextInt();
-
-				if (isInt) {
-					userChoice = in.nextInt();
-					if (userChoice > 6 || userChoice < 0) {
-						System.out.println("Invalid input. Enter an integer from 0 to 6.\n");
-					}
-				} else
-					System.out.println("Invalid input. Character's not allowed.\n");
-				in.nextLine();
-
-			} while (!isInt || userChoice > 6 || userChoice < 0);
+			userInputHandler(0,6);
 			
 			switch (userChoice) {
 
@@ -83,16 +66,37 @@ public class MidiPlayer {
 				exit();
 			}
 		}
-
-		// return userChoice;
-
 	} // end displayMenuAndHandleInput()
+	
+	/**
+	 * Handles the user's input and make sure it is valid and between the specified range.
+	 * @param lower the lower bound.
+	 * @param upper the upper bound. 
+	 */
+	public static void userInputHandler(int lower, int upper) {
+		
+		do {
+
+			System.out.print("Enter the number of your choice: ");
+			isInt = in.hasNextInt();
+
+			if (isInt) {
+				userChoice = in.nextInt();
+				if (userChoice < lower || userChoice > upper) {
+					System.out.println("-> Invalid input. Enter an integer from " + lower + " to " + upper + ".\n");
+				}
+			} else
+				System.out.println("-> Invalid input. Character's not allowed.\n");
+			in.nextLine();
+
+		} while (!isInt || userChoice > upper || userChoice < lower);
+	}
 
 	/**
 	 * 
 	 */
 	public static void exit() {
-		System.out.println("-> Exiting... Have a nice day!");
+		System.out.println("-> Exiting...");
 		System.exit(0);
 	} // end exit()
 
@@ -166,28 +170,10 @@ public class MidiPlayer {
 				+ "/* 122: */     \"Seashore\",\r\n" + "/* 123: */     \"Bird Tweet\",\r\n"
 				+ "/* 124: */     \"Telephone Ring\",\r\n" + "/* 125: */     \"Helicopter\",\r\n"
 				+ "/* 126: */     \"Applause\",\r\n" + "/* 127: */     \"Gunshot\" ");
-
-		Boolean isInt = false;
-		int userChoice = 0;
-
-		do {
-
-			System.out.print("Enter the number of your choice: ");
-			isInt = in.hasNextInt();
-
-			if (isInt) {
-				userChoice = in.nextInt();
-				if (userChoice > 127 || userChoice < 0) {
-					System.out.println("Invalid input. Enter an integer from 0 to 127.\n");
-				}
-			} else
-				System.out.println("Invalid input. Character's not allowed.\n");
-			in.nextLine();
-
-		} while (!isInt || userChoice > 127 || userChoice < 0);
-
+		
+		System.out.println("*****INSTRUMENT SELECTION*****");
+		userInputHandler(0, 127);
 		synth.setInstrument(userChoice);
-
 		System.out.println("-> " + synth.getNameForInstrument(userChoice) + " has been selected.");
 
 	} // end selectInstrument()
@@ -196,27 +182,10 @@ public class MidiPlayer {
 	 * Allows user to change the volume of the synth.
 	 */
 	public static void selectVolume() {
-		Boolean isInt = false;
-		int userChoice = 0;
-
-		do {
-
-			System.out.print("Enter volume level(0 - 127): ");
-			isInt = in.hasNextInt();
-
-			if (isInt) {
-				userChoice = in.nextInt();
-				if (userChoice > 127 || userChoice < 0) {
-					System.out.println("Invalid input. Enter an integer from 0 to 127.\n");
-				}
-			} else
-				System.out.println("Invalid input. Character's not allowed.\n");
-			in.nextLine();
-
-		} while (!isInt || userChoice > 127 || userChoice < 0);
-
+		
+		System.out.println("****VOLUME SELECTION****");
+		userInputHandler(0,127);
 		synth.setVolume(userChoice);
-
 		System.out.println("-> Volume set to " + synth.getVolume() + ".");
 
 	} // end selectVolume()
@@ -226,7 +195,8 @@ public class MidiPlayer {
 	 */
 	public static void playNotes() {
 
-		System.out.println("Enter one or more notes between 0 and 127 with a blank space between them:");
+		System.out.println("Enter notes between 0 and 127 and hit enter when done. (example: 0 123 45 56 34 23)");
+		System.out.print("Input: ");
 		String lineOfNotes = in.nextLine();
 		String[] notesString = lineOfNotes.trim().split(" ");
 
@@ -258,15 +228,14 @@ public class MidiPlayer {
 	 */
 	public static void notesForTune() {
 		tune = new Tune();
-		System.out.println("Enter one or more notes for a tune between 0 and 127 with a blank space between them:");
-		String lineOfNotes = in.nextLine();
-		String[] notesString = lineOfNotes.trim().split(" ");
-
-		//int[] notes = new int[notesString.length];
+		System.out.println("Enter notes between 0 and 127 and hit enter when done. (example: 0 123 45 56 34 23)");
+		System.out.print("Input: ");
+		String lineOfNotes = in.nextLine(); // gets full line of user input
+		String[] notesString = lineOfNotes.trim().split(" "); // splits it up based on blank spaces and puts it an array of strings
+		
 		for (int i = 0; i < notesString.length; i++) {
-			int noteNumber = Integer.parseInt(notesString[i]);	
-			tune.add(new Note(noteNumber, 1000));		
-			//notes[i] = Integer.parseInt(notesString[i]);
+			int noteNumber = Integer.parseInt(notesString[i]);	 // extracts the note numbers from the string array
+			tune.add(new Note(noteNumber, 1000));	// adds a new note to the tune object
 		}
 		
 		System.out.println("-> Tune created.");
@@ -282,7 +251,7 @@ public class MidiPlayer {
 		for(int i = 0; i < 20; i++) {
 			
 			Random ran = new Random();
-			int x = ran.nextInt(36) + 48;
+			int x = ran.nextInt(36) + 48; // random number between 
 			tune.add(new Note(x, 1000));
 			
 			/*
