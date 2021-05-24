@@ -5,7 +5,14 @@ import java.util.Random;
 import java.util.Scanner;
 
 /**
- * 
+ * This class represents a Midiplayer which simulates various instruments and sound effects.
+ * Command line interface allows for: 
+ * 1. selecting sound effect 
+ * 2. changing volume 
+ * 3. playing notes
+ * 4. entering notes for a tune
+ * 5. making computer generate a random note
+ * 6. playing the tune
  * @author marti
  *
  */
@@ -40,7 +47,7 @@ public class MidiPlayer {
 			System.out.println(" 5.  Make up a randome tune.");
 			System.out.println(" 6.  Play the tune.\n");
 
-			userInputHandler(0,6);
+			inputHandler(0,6);
 			
 			switch (userChoice) {
 
@@ -73,7 +80,7 @@ public class MidiPlayer {
 	 * @param lower the lower bound.
 	 * @param upper the upper bound. 
 	 */
-	public static void userInputHandler(int lower, int upper) {
+	public static void inputHandler(int lower, int upper) {
 		
 		do {
 
@@ -93,7 +100,7 @@ public class MidiPlayer {
 	}
 
 	/**
-	 * 
+	 * Exits that program. 
 	 */
 	public static void exit() {
 		System.out.println("-> Exiting...");
@@ -101,7 +108,7 @@ public class MidiPlayer {
 	} // end exit()
 
 	/**
-	 * 
+	 * Displays all of the instruments and corresponding value and allows user to select one.
 	 */
 	public static void selectInstrument() {
 
@@ -172,7 +179,7 @@ public class MidiPlayer {
 				+ "/* 126: */     \"Applause\",\r\n" + "/* 127: */     \"Gunshot\" ");
 		
 		System.out.println("*****INSTRUMENT SELECTION*****");
-		userInputHandler(0, 127);
+		inputHandler(0, 127);
 		synth.setInstrument(userChoice);
 		System.out.println("-> " + synth.getNameForInstrument(userChoice) + " has been selected.");
 
@@ -184,14 +191,15 @@ public class MidiPlayer {
 	public static void selectVolume() {
 		
 		System.out.println("****VOLUME SELECTION****");
-		userInputHandler(0,127);
+		System.out.println("Enter a number from 0 (min volume) to 127 (max volume).");
+		inputHandler(0,127);
 		synth.setVolume(userChoice);
 		System.out.println("-> Volume set to " + synth.getVolume() + ".");
 
 	} // end selectVolume()
 
 	/**
-	 * 
+	 * Gets notes from the user and plays them. 
 	 */
 	public static void playNotes() {
 
@@ -224,7 +232,7 @@ public class MidiPlayer {
 	} // end playNotes()
 
 	/**
-	 * 
+	 * Gets notes from the user and creates a tune from them. 
 	 */
 	public static void notesForTune() {
 		tune = new Tune();
@@ -243,58 +251,56 @@ public class MidiPlayer {
 	} // end notesForTune()
 
 	/**
-	 * 
+	 * Creates a random tune of notes. Notes range from 36 to 84.
+	 * Large changes in successive notes are rarer than small changes.
 	 */
 	public static void randomTune() {
 		tune = new Tune();
+		Random ran = new Random();
+		int noteNumber;
 		
-		for(int i = 0; i < 20; i++) {
+		for(int i = 0; i < 30; i++) {
 			
-			Random ran = new Random();
-			int x = ran.nextInt(36) + 48; // random number between 
-			tune.add(new Note(x, 1000));
-			
-			/*
-			double randBlock = Math.random();
+			double stratifiedRandom = Math.random();
 			
 			// Notes will range from 36 to 84
 			
 			// Most common, make small changes to note
-			if(randBlock >= 0 && randBlock <= .5) {
-				Random ran = new Random();
-				int x = ran.nextInt(6) + 5;
-				
+			if(stratifiedRandom >= 0 && stratifiedRandom <= .5) {
+				noteNumber = ran.nextInt(56) + 8; // random number between (56 and 64)
+				tune.add(new Note(noteNumber, 1000));
+				//System.out.println("56 to 64");
 			}
 			
 			// Second most common, slightly larger changes to note
-			else if(randBlock > .5 && randBlock <= .75) {
-				
+			else if(stratifiedRandom > .5 && stratifiedRandom <= .75) {
+				noteNumber = ran.nextInt(51) + 18; // random number between (51 and 69)
+				tune.add(new Note(noteNumber, 1000));
+				//System.out.println("51 to 69");
 			}
 			
 			// Third most common, slightly larger changes to note
-			else if(randBlock > .75 && randBlock <= .90) {
-				
+			else if(stratifiedRandom > .75 && stratifiedRandom <= .90) {
+				noteNumber = ran.nextInt(46) + 28; // random number between (46 and 74)
+				tune.add(new Note(noteNumber, 1000));
+				//System.out.println("46 to 74");
 			}
 			
 			// Least common, this is between .91 - .99, this is for large changes to the note
 			// whole range(36 - 84)
 			else {
-				
-			}
-			*/
-			
-			
-			
-			
+				noteNumber = ran.nextInt(36) + 48; // random number between (36 and 84)
+				tune.add(new Note(noteNumber, 1000));
+				//System.out.println("36 to 84");
+			}		
 		}
 		
 		System.out.println("-> Random tune created.");
 		
-		
 	} // end randomTune()
 
 	/**
-	 * 
+	 * Play's a tune. 
 	 */
 	public static void playTune() {
 		if(tune == null) 
